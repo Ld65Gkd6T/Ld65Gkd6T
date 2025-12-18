@@ -66,20 +66,38 @@ class GoCQHTTPClient:
     
     def send_private_msg(self, user_id, message):
         """Send a private message"""
-        url = f"{self.api_url}/send_private_msg"
-        data = {"user_id": user_id, "message": message}
-        return requests.post(url, json=data).json()
+        try:
+            url = f"{self.api_url}/send_private_msg"
+            data = {"user_id": user_id, "message": message}
+            response = requests.post(url, json=data, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending message: {e}")
+            return None
     
     def send_group_msg(self, group_id, message):
         """Send a group message"""
-        url = f"{self.api_url}/send_group_msg"
-        data = {"group_id": group_id, "message": message}
-        return requests.post(url, json=data).json()
+        try:
+            url = f"{self.api_url}/send_group_msg"
+            data = {"group_id": group_id, "message": message}
+            response = requests.post(url, json=data, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending message: {e}")
+            return None
     
     def get_friend_list(self):
         """Get friend list"""
-        url = f"{self.api_url}/get_friend_list"
-        return requests.get(url).json()
+        try:
+            url = f"{self.api_url}/get_friend_list"
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error getting friend list: {e}")
+            return None
 
 # Usage
 client = GoCQHTTPClient()
@@ -95,17 +113,31 @@ import json
 
 async def handle_events():
     uri = "ws://localhost:5700"
-    async with websockets.connect(uri) as websocket:
-        while True:
-            message = await websocket.recv()
-            event = json.loads(message)
-            
-            # Handle different event types
-            if event.get("post_type") == "message":
-                if event.get("message_type") == "private":
-                    print(f"Private message from {event['user_id']}: {event['message']}")
-                elif event.get("message_type") == "group":
-                    print(f"Group message in {event['group_id']}: {event['message']}")
+    while True:
+        try:
+            async with websockets.connect(uri) as websocket:
+                print("Connected to go-cqhttp WebSocket")
+                while True:
+                    try:
+                        message = await websocket.recv()
+                        event = json.loads(message)
+                        
+                        # Handle different event types
+                        if event.get("post_type") == "message":
+                            if event.get("message_type") == "private":
+                                print(f"Private message from {event['user_id']}: {event['message']}")
+                            elif event.get("message_type") == "group":
+                                print(f"Group message in {event['group_id']}: {event['message']}")
+                    except json.JSONDecodeError as e:
+                        print(f"Error parsing JSON: {e}")
+                    except Exception as e:
+                        print(f"Error processing message: {e}")
+        except websockets.exceptions.WebSocketException as e:
+            print(f"WebSocket error: {e}. Reconnecting in 5 seconds...")
+            await asyncio.sleep(5)
+        except Exception as e:
+            print(f"Unexpected error: {e}. Reconnecting in 5 seconds...")
+            await asyncio.sleep(5)
 
 asyncio.run(handle_events())
 ```
