@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 """
-简化的QQ消息轮询程序
-Simplified QQ Message Polling Program
-参考Astrbot设计，实现实时获取QQ消息的功能
+简化的QQ消息轮询程序 - 框架演示
+Simplified QQ Message Polling Program - Framework Demo
+参考Astrbot设计，展示HTTP API轮询框架
+
+⚠️  重要说明:
+go-cqhttp 不支持通过 HTTP API 轮询获取消息。
+本程序仅作为框架演示，展示如何与 go-cqhttp HTTP API 交互。
+实际接收消息请使用 qq_websocket.py（WebSocket方式）。
+
+本程序功能:
+- ✓ 展示 HTTP API 调用方式
+- ✓ 获取登录信息、好友列表、群列表
+- ✓ 展示轮询框架结构
+- ✗ 无法实际接收消息（go-cqhttp API限制）
 
 使用方法:
 1. 安装依赖: pip install aiohttp
 2. 启动 go-cqhttp 或 mirai
 3. 配置下方的 API_URL 和 ACCESS_TOKEN
-4. 运行此程序: python qq_polling.py
+4. 运行此程序查看 API 调用效果
+5. 若要实际接收消息，请使用 qq_websocket.py
 """
 
 import asyncio
@@ -122,15 +134,23 @@ class QQPoller:
     
     async def fetch_messages(self) -> List[QQMessage]:
         """
-        获取新消息
-        注意: go-cqhttp 主要通过事件上报获取消息，这里使用轮询方式作为演示
-        实际生产环境建议使用 WebSocket 或 HTTP POST 事件上报
+        获取新消息 - 框架示例
+        
+        重要说明:
+        --------
+        go-cqhttp 不支持通过 HTTP API 轮询获取消息。
+        消息必须通过以下方式接收：
+        1. WebSocket 正向连接（推荐，见 qq_websocket.py）
+        2. HTTP POST 事件上报
+        
+        本方法仅作为框架演示，实际使用请使用 qq_websocket.py
+        或配置 go-cqhttp 的 HTTP POST 上报功能。
         """
         messages = []
         
-        # 方法1: 使用 get_recent_contact 获取最近消息（仅部分实现支持）
-        # 由于 go-cqhttp 的 API 限制，这里主要展示框架
-        # 实际使用时建议配合 WebSocket 事件监听
+        # go-cqhttp 不提供轮询消息的 API
+        # 此处返回空列表仅用于展示轮询框架结构
+        # 实际生产环境请使用 WebSocket（qq_websocket.py）
         
         return messages
     
@@ -152,11 +172,15 @@ class QQPoller:
         print(f"群组数量: {len(groups)}")
         print("-" * 60)
         
-        print("开始监听消息...\n")
+        print("开始监听消息...")
+        print("⚠️  注意: go-cqhttp 不支持 HTTP 轮询获取消息")
+        print("⚠️  本程序仅展示框架，实际请使用 qq_websocket.py")
+        print()
         
-        # 模拟消息轮询
-        # 注意: go-cqhttp 推荐使用 WebSocket 或 HTTP POST 方式接收消息
-        # 这里提供轮询框架供参考
+        # 模拟消息轮询框架
+        # 注意: go-cqhttp 不支持 HTTP API 轮询获取消息
+        # 这里仅展示轮询框架结构，不会收到实际消息
+        # 实际生产环境请使用 WebSocket 方式（qq_websocket.py）
         while self.is_running:
             try:
                 messages = await self.fetch_messages()
