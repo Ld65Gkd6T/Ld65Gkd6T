@@ -1,0 +1,6 @@
+# QQ消息轮询程序依赖
+# 用于 qq_polling.py (HTTP API 轮询方式)
+aiohttp>=3.8.0
+
+# 用于 qq_websocket.py (WebSocket 实时监听方式，推荐)
+websockets>=10.0
