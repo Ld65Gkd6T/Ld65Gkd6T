@@ -2,15 +2,57 @@
 
 实时获取通知信息的功能实现，参考 Astrbot 关于获取微信/QQ信息的设计。
 
+## 快速开始 (推荐)
+
+### 方式一：单文件WebSocket版本（推荐，实时性最好）
+
+```bash
+# 1. 安装依赖
+pip install websockets
+
+# 2. 配置 go-cqhttp 的 config.yml，添加 WebSocket 正向连接
+# servers:
+#   - ws:
+#       host: 127.0.0.1
+#       port: 6700
+
+# 3. 启动 go-cqhttp
+
+# 4. 运行程序
+python qq_websocket.py
+```
+
+**特点**: 
+- ✓ 真正的实时消息推送
+- ✓ 单文件实现，代码简洁
+- ✓ 支持私聊、群聊消息
+- ✓ 显示完整的发送者信息
+
+### 方式二：单文件HTTP轮询版本
+
+```bash
+# 1. 安装依赖
+pip install aiohttp
+
+# 2. 启动 go-cqhttp（HTTP API模式）
+
+# 3. 运行程序
+python qq_polling.py
+```
+
 ## 功能特性
 
-本项目实现了一个可扩展的实时通知系统，参考了 Astrbot 的架构设计：
+本项目提供两种实现方式：
 
+### 简化版（单文件）
+- **qq_websocket.py**: WebSocket实时监听，推荐使用
+- **qq_polling.py**: HTTP API轮询方式
+
+### 完整版（模块化）
 - **多平台支持**: 支持微信（WeChat）和QQ平台的通知获取
 - **异步架构**: 使用 Python asyncio 实现高性能异步处理
 - **可扩展设计**: 基于抽象基类，可轻松添加新的平台支持
 - **回调机制**: 支持注册回调函数处理新通知
-- **轮询机制**: 类似 Astrbot 的消息轮询实现
 - **平台信息查询**: 获取联系人、群组等平台信息
 
 ## 项目结构
@@ -28,9 +70,30 @@ notification_system/
 
 ## 使用方法
 
-详细使用示例请参考 `example_usage.py` 文件。
+### 简化版使用（推荐新手）
 
-### 基本使用
+**WebSocket版本** (`qq_websocket.py`):
+```python
+# 修改配置
+WEBSOCKET_URL = "ws://127.0.0.1:6700/ws"
+
+# 直接运行
+python qq_websocket.py
+```
+
+**HTTP轮询版本** (`qq_polling.py`):
+```python
+# 修改配置
+API_URL = "http://localhost:5700"
+ACCESS_TOKEN = ""  # 可选
+
+# 直接运行
+python qq_polling.py
+```
+
+### 完整版使用（高级功能）
+
+详细使用示例请参考 `example_usage.py` 文件。
 
 ```python
 import asyncio
