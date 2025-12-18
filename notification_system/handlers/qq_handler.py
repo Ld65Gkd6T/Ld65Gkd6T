@@ -20,7 +20,7 @@ class QQNotificationHandler(BaseNotificationHandler):
         self.api_url = config.get("api_url", "http://localhost:5700")
         self.access_token = config.get("access_token", "")
         self.qq_number = config.get("qq_number", "")
-        self.last_message_id = 0
+        self.last_message_id = config.get("last_message_id", 0)
         self.polling_interval = config.get("polling_interval", 1.0)
     
     async def connect(self) -> bool:

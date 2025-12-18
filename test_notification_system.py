@@ -58,8 +58,8 @@ async def test_basic_functionality():
     print("\n5. Testing connection...")
     wechat_connected = await wechat_handler.connect()
     qq_connected = await qq_handler.connect()
-    assert wechat_connected == True
-    assert qq_connected == True
+    assert wechat_connected
+    assert qq_connected
     print("   ✓ Handlers connected")
     
     # Test 6: Get platform info

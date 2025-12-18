@@ -42,7 +42,8 @@ class NotificationData:
         }
     
     def __repr__(self) -> str:
-        return f"NotificationData(platform={self.platform}, sender={self.sender_name}, content={self.content[:30]}...)"
+        content_preview = (self.content or "")[:30]
+        return f"NotificationData(platform={self.platform}, sender={self.sender_name}, content={content_preview}...)"
 
 
 class BaseNotificationHandler(ABC):
